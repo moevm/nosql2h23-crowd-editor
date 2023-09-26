@@ -1,0 +1,1 @@
+Ссылка на скринкаст: https://drive.google.com/file/d/1B6qsq50V0QrWcbD6qy5PJOKsyBlrB-UW/view?usp=sharing
