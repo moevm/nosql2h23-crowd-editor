@@ -22,6 +22,24 @@ def get_books():
     return error, 500
 
 
+@app.route("/user", methods=["GET"])
+def get_users():
+    filter_data = request.json
+    error, users = dbms.filter_users(filter_data)
+    if not error:
+        return jsonify(users), 200
+    return error, 500
+
+
+@app.route("/book", methods=["GET"])
+def get_books():
+    filter_data = request.json
+    error, books = dbms.filter_books(filter_data)
+    if not error:
+        return jsonify(books), 200
+    return error, 500
+
+
 @app.route("/user/edit", methods=["POST"])
 def edit_user():
     edit_data = request.json

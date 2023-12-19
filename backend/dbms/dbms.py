@@ -14,7 +14,11 @@ def add_book(book_desc: dict):
     return True
 
 
-def get_user_pwd(login: str):
+def filter_users(filter_desc: dict):
+    return ""
+
+
+def filter_books(filter_desc: dict):
     return ""
 
 
