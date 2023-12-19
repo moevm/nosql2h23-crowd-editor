@@ -1,9 +1,9 @@
 def get_users():
-    return []
+    return "", []
 
 
 def get_books():
-    return []
+    return "", []
 
 
 def add_user(user_desc: dict):
