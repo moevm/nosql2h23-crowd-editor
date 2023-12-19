@@ -1,0 +1,45 @@
+@import '../../styles/colors.css';
+@import '../../styles/cards.css';
+
+.card-custom {
+  width: var(--card-width);
+  max-width: var(--card-width);
+  height: var(--card-height);
+  max-height: var(--card-height);;
+
+  border: 1px solid var(--primary);
+
+  overflow-y: hidden;
+  text-overflow: ellipsis;
+
+  .img-spot {
+    display: flex;
+    width: 100%;
+    height: 50%;
+    border-bottom: 1px solid var(--primary);
+    img {
+      margin: auto;
+      height: 110px;
+    }
+  }
+  .text-spot {
+    max-height: 50%;
+    max-width: 100%;
+    padding: 10px;
+    h4 {
+      cursor: pointer;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .bio {
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px;
+      color: var(--gray);
+    }
+  }
+  transition-duration: 0.3s;
+}
+.card-custom:hover {
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.15);
+}

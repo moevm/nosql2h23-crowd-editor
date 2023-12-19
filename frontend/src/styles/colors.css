@@ -1,0 +1,6 @@
+:root {
+  --primary: #20C997;
+  --primary-gradient: linear-gradient(180deg, #20C997 10.42%, rgba(25, 135, 84, 0.96) 100%);
+  --btn-gradient: linear-gradient(180deg, #23A981 0%, rgba(25, 135, 84, 0.96) 100%);
+  --gray: #68717A;
+}
