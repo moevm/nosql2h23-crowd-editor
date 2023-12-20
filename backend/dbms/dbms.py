@@ -19,7 +19,17 @@ def get_users():
 
 
 def get_books():
-    return "", []
+    def _get_books(tx):
+        result = tx.run("MATCH (book:Book)"
+                        "RETURN (book)")
+        return list(result)
+    with driver.session() as session:
+        try:
+            res = session.execute_read(_get_books)
+            msg = ""
+        except Exception as e:
+            msg, res = f"{type(e).__name__}: {e}", []
+    return msg, res
 
 
 def add_user(user_desc: dict):
