@@ -52,7 +52,28 @@ def add_user(user_desc: dict):
 
 
 def add_book(book_desc: dict):
-    return ""
+    def _add_book(tx):
+        result = tx.run("MATCH (user:User {login: $user_login})"
+                        "CREATE (book:Book {"
+                        "    title: $title,"
+                        "    genre: $genre,"
+                        "    date: $date,"
+                        "    text: $text"
+                        "    })<-[:WROTE]-(user) "
+                        "RETURN 'Created book with title ' + book.title", 
+                        title=book_desc['title'],
+                        genre=book_desc['genre'],
+                        user_login=book_desc['user_login'],
+                        date=book_desc['date'],
+                        text=book_desc['text'])
+        return result.single()[0]
+    with driver.session() as session:
+        try:
+            res = session.execute_write(_add_book)
+            res = ""
+        except Exception as e:
+            res = f"{type(e).__name__}: {e}"
+    return res
 
 
 def filter_users(filter_desc: dict):
