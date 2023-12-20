@@ -5,11 +5,31 @@ from token import TOKEN, URL
 driver = GraphDatabase.driver(URL, auth=("neo4j", TOKEN))
 
 def get_users():
-    return "", []
+    def _get_users(tx):
+        result = tx.run("MATCH (user:User)"
+                        "RETURN (user)")
+        return list(result)
+    with driver.session() as session:
+        try:
+            res = session.execute_read(_get_users)
+            msg = ""
+        except Exception as e:
+            msg, res = f"{type(e).__name__}: {e}", []
+    return msg, res
 
 
 def get_books():
-    return "", []
+    def _get_books(tx):
+        result = tx.run("MATCH (book:Book)"
+                        "RETURN (book)")
+        return list(result)
+    with driver.session() as session:
+        try:
+            res = session.execute_read(_get_books)
+            msg = ""
+        except Exception as e:
+            msg, res = f"{type(e).__name__}: {e}", []
+    return msg, res
 
 
 def add_user(user_desc: dict):
