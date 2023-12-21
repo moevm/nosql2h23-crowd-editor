@@ -100,13 +100,13 @@ def filter_users(filter_desc: dict):
     filter_data = filter_desc["filter"]
     get_data = filter_desc['get']
     def _filter_users(tx):
-        filter_str = '{' + ", ".join(f"{param_name}: " + f"'{param_value}'" if type(param_value) == str else param_value for param_name, param_value in filter_data.items()) + '}'
+        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
         result = tx.run(f"MATCH (user:User {filter_str})"
                         f"RETURN (user)")
         return [x.data()['user'] for x in result]
     with driver.session() as session:
         try:
-            res = session.execute_write(_filter_users)
+            res = session.execute_read(_filter_users)
             filtered_res = []
             for node in res:
                 filtered_res.append(dict((k, v) for k,v in node.items() if k in get_data))
@@ -122,13 +122,13 @@ def filter_books(filter_desc: dict):
     filter_data = filter_desc["filter"]
     get_data = filter_desc['get']
     def _filter_books(tx):
-        filter_str = '{' + ", ".join(f"{param_name}: " + f"'{param_value}'" if type(param_value) == str else param_value for param_name, param_value in filter_data.items()) + '}'
+        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
         result = tx.run(f"MATCH (book:Book {filter_str})"
                         f"RETURN (book)")
         return [x.data()['book'] for x in result]
     with driver.session() as session:
         try:
-            res = session.execute_write(_filter_books)
+            res = session.execute_read(_filter_books)
             filtered_res = []
             for node in res:
                 filtered_res.append(dict((k, v) for k,v in node.items() if k in get_data))
@@ -140,9 +140,35 @@ def filter_books(filter_desc: dict):
     return msg, res
 
 
-def edit_user(user_desc: dict):
-    return True
+def edit_user(update_user_desc: dict):
+    filter_data = update_user_desc["filter"]
+    set_data = update_user_desc["set"]
+    def _edit_user(tx):
+        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
+        set_str = ", ".join(f"user.{param_name} = " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in set_data.items())
+        result = tx.run(f"MATCH (user:User {filter_str})"
+                        f"SET {set_str}")
+    with driver.session() as session:
+        try:
+            session.execute_write(_edit_user)
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+    return msg   
 
 
-def edit_book(book_desc: dict):
-    return True
+def edit_book(update_book_desc: dict):
+    filter_data = update_book_desc["filter"]
+    set_data = update_book_desc["set"]
+    def _edit_book(tx):
+        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
+        set_str = ", ".join(f"book.{param_name} = " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in set_data.items())
+        result = tx.run(f"MATCH (book:Book {filter_str})"
+                        f"SET {set_str}")
+    with driver.session() as session:
+        try:
+            session.execute_write(_edit_book)
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+    return msg   
