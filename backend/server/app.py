@@ -43,37 +43,37 @@ def get_books():
 @app.route("/user/edit", methods=["POST"])
 def edit_user():
     edit_data = request.json
-    check = dbms.edit_user(edit_data)
-    if check:
-        return 200
-    return 500
+    error = dbms.edit_user(edit_data)
+    if error:
+        return error, 500
+    return 200
 
 
 @app.route("/book/edit", methods=["POST"])
 def edit_book():
     edit_data = request.json
-    check = dbms.edit_book(edit_data)
-    if check:
-        return 200
-    return 500
+    error = dbms.edit_book(edit_data)
+    if error:
+        return error, 500
+    return 200
 
 
 @app.route("/user/add", methods=["POST"])
 def add_user():
     add_data = request.json
-    check, users = dbms.add_user(add_data)
-    if check:
-        return 200
-    return 500
+    error, users = dbms.add_user(add_data)
+    if error:
+        return error, 500
+    return 200
 
 
 @app.route("/book/add", methods=["POST"])
 def add_book():
     add_data = request.json
-    check, users = dbms.add_book(add_data)
-    if check:
-        return 200
-    return 500
+    error, users = dbms.add_book(add_data)
+    if error:
+        return error, 500
+    return 200
 
 
 if __name__ == '__main__':
