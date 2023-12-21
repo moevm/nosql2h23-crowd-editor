@@ -140,8 +140,21 @@ def filter_books(filter_desc: dict):
     return msg, res
 
 
-def edit_user(user_desc: dict):
-    return True
+def edit_user(update_user_desc: dict):
+    filter_data = update_user_desc["filter"]
+    set_data = update_user_desc["set"]
+    def _edit_user(tx):
+        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
+        set_str = ", ".join(f"user.{param_name} = " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in set_data.items())
+        result = tx.run(f"MATCH (user:User {filter_str})"
+                        f"SET {set_str}")
+    with driver.session() as session:
+        try:
+            session.execute_write(_edit_user)
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+    return msg   
 
 
 def edit_book(book_desc: dict):
