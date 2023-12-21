@@ -7,7 +7,8 @@ import Home from "./pages/home";
 import Auth from "./pages/auth";
 import { AuthProvider } from "./pages/auth/AuthProvider";
 import Users from "./pages/users";
-import Library from "./pages/book";
+import Library from "./pages/library";
+import Profile from "./pages/profile";
 
 export default function Router() {
   const router = createBrowserRouter([
@@ -34,6 +35,13 @@ export default function Router() {
       element: 
         <ProtectedRoute>
           <Library />
+        </ProtectedRoute>
+    },
+    {
+      path: "/profile",
+      element: 
+        <ProtectedRoute>
+          <Profile />
         </ProtectedRoute>
     },
   ]);

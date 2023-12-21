@@ -21,4 +21,14 @@
       color: rgba(255, 255, 255, 0.8);
     }
   }
+  .icon-links {
+    display: flex;
+    align-items: center;
+    color: white;
+    svg {
+      height: 30px;
+      padding: 0 15px;
+      margin: auto;
+    }
+  }
 }
