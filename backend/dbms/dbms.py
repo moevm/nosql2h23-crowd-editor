@@ -100,7 +100,7 @@ def filter_users(filter_desc: dict):
     filter_data = filter_desc["filter"]
     get_data = filter_desc['get']
     def _filter_users(tx):
-        filter_str = '{' + ", ".join(f"{param_name}: " + f"'{param_value}'" if type(param_value) == str else param_value for param_name, param_value in filter_data.items()) + '}'
+        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
         result = tx.run(f"MATCH (user:User {filter_str})"
                         f"RETURN (user)")
         return [x.data()['user'] for x in result]
@@ -122,7 +122,7 @@ def filter_books(filter_desc: dict):
     filter_data = filter_desc["filter"]
     get_data = filter_desc['get']
     def _filter_books(tx):
-        filter_str = '{' + ", ".join(f"{param_name}: " + f"'{param_value}'" if type(param_value) == str else param_value for param_name, param_value in filter_data.items()) + '}'
+        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
         result = tx.run(f"MATCH (book:Book {filter_str})"
                         f"RETURN (book)")
         return [x.data()['book'] for x in result]
