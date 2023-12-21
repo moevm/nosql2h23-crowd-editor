@@ -80,6 +80,7 @@ def add_book(book_desc: dict):
                         "    date: $date,"
                         "    text: $text"
                         "    })<-[:WROTE]-(user) "
+                        "SET book.id=ID(book)"
                         "RETURN 'Created book with title ' + book.title", 
                         title=book_desc['title'],
                         genre=book_desc['genre'],
