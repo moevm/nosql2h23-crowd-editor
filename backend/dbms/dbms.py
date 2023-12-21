@@ -157,5 +157,18 @@ def edit_user(update_user_desc: dict):
     return msg   
 
 
-def edit_book(book_desc: dict):
-    return True
+def edit_book(update_book_desc: dict):
+    filter_data = update_book_desc["filter"]
+    set_data = update_book_desc["set"]
+    def _edit_book(tx):
+        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
+        set_str = ", ".join(f"book.{param_name} = " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in set_data.items())
+        result = tx.run(f"MATCH (book:Book {filter_str})"
+                        f"SET {set_str}")
+    with driver.session() as session:
+        try:
+            session.execute_write(_edit_book)
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+    return msg   
