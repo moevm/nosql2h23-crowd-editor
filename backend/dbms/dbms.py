@@ -80,6 +80,7 @@ def add_book(book_desc: dict):
                         "    date: $date,"
                         "    text: $text"
                         "    })<-[:WROTE]-(user) "
+                        "SET book.id=ID(book)"
                         "RETURN 'Created book with title ' + book.title", 
                         title=book_desc['title'],
                         genre=book_desc['genre'],
@@ -172,3 +173,21 @@ def edit_book(update_book_desc: dict):
         except Exception as e:
             msg = f"{type(e).__name__}: {e}"
     return msg   
+
+def add_book_review(review_info):
+    user_login = review_info['user_login']
+    book_id = review_info['book_id']
+    review_data = review_info['review_data']
+    def _add_book_review(tx):
+        review_data_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in review_data.items()) + '}'
+        result = tx.run("MATCH (user:User {login: $user_login}), (book:Book {id: $book_id})"
+                        f"CREATE (user)-[r:REVIEWED {review_data_str}]->(book)"
+                        "SET r.id=ID(r)",
+                        user_login=user_login, book_id=book_id)
+    with driver.session() as session:
+        try:
+            session.execute_write(_add_book_review)
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+    return msg  
