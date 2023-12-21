@@ -8,7 +8,7 @@ def get_users():
     def _get_users(tx):
         result = tx.run("MATCH (user:User)"
                         "RETURN (user)")
-        return list(result)
+        return [x.data() for x in result]
     with driver.session() as session:
         try:
             res = session.execute_read(_get_users)
@@ -22,7 +22,7 @@ def get_books():
     def _get_books(tx):
         result = tx.run("MATCH (book:Book)"
                         "RETURN (book)")
-        return list(result)
+        return [x.data() for x in result]
     with driver.session() as session:
         try:
             res = session.execute_read(_get_books)
