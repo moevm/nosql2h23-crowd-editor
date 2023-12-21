@@ -1,7 +1,9 @@
 @import './colors.css';
-
+.input-custom {
+  border: 1px solid var(--primary);
+}
 .input-custom:focus {
-  box-shadow: 0 0px 8px 0 var(--primary);
+  box-shadow: 0 0px 4px 0 var(--primary);
   border: 1px solid var(--primary);
 }
 

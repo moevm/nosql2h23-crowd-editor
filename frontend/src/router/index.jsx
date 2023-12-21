@@ -7,6 +7,7 @@ import Home from "./pages/home";
 import Auth from "./pages/auth";
 import { AuthProvider } from "./pages/auth/AuthProvider";
 import Users from "./pages/users";
+import Library from "./pages/book";
 
 export default function Router() {
   const router = createBrowserRouter([
@@ -26,6 +27,13 @@ export default function Router() {
       element: 
         <ProtectedRoute>
           <Users />
+        </ProtectedRoute>
+    },
+    {
+      path: "/books",
+      element: 
+        <ProtectedRoute>
+          <Library />
         </ProtectedRoute>
     },
   ]);
