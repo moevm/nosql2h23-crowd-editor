@@ -8,7 +8,7 @@ def get_users():
     def _get_users(tx):
         result = tx.run("MATCH (user:User)"
                         "RETURN (user)")
-        return list(result)
+        return [x.data() for x in result]
     with driver.session() as session:
         try:
             res = session.execute_read(_get_users)
@@ -22,7 +22,7 @@ def get_books():
     def _get_books(tx):
         result = tx.run("MATCH (book:Book)"
                         "RETURN (book)")
-        return list(result)
+        return [x.data() for x in result]
     with driver.session() as session:
         try:
             res = session.execute_read(_get_books)
@@ -73,7 +73,7 @@ def add_user(user_desc: dict):
 
 def add_book(book_desc: dict):
     def _add_book(tx):
-        result = tx.run("MATCH (user:User {login: $user_login})"
+        result = tx.run("MATCH (user:User {login: $author_login})"
                         "CREATE (book:Book {"
                         "    title: $title,"
                         "    genre: $genre,"
@@ -83,7 +83,7 @@ def add_book(book_desc: dict):
                         "RETURN 'Created book with title ' + book.title", 
                         title=book_desc['title'],
                         genre=book_desc['genre'],
-                        user_login=book_desc['user_login'],
+                        author_login=book_desc['author_login'],
                         date=book_desc['date'],
                         text=book_desc['text'])
         return result.single()[0]
@@ -97,11 +97,47 @@ def add_book(book_desc: dict):
 
 
 def filter_users(filter_desc: dict):
-    return ""
+    filter_data = filter_desc["filter"]
+    get_data = filter_desc['get']
+    def _filter_users(tx):
+        filter_str = '{' + ", ".join(f"{param_name}: " + f"'{param_value}'" if type(param_value) == str else param_value for param_name, param_value in filter_data.items()) + '}'
+        result = tx.run(f"MATCH (user:User {filter_str})"
+                        f"RETURN (user)")
+        return [x.data()['user'] for x in result]
+    with driver.session() as session:
+        try:
+            res = session.execute_write(_filter_users)
+            filtered_res = []
+            for node in res:
+                filtered_res.append(dict((k, v) for k,v in node.items() if k in get_data))
+            res = filtered_res
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+            res = []
+    return msg, res
 
 
 def filter_books(filter_desc: dict):
-    return ""
+    filter_data = filter_desc["filter"]
+    get_data = filter_desc['get']
+    def _filter_books(tx):
+        filter_str = '{' + ", ".join(f"{param_name}: " + f"'{param_value}'" if type(param_value) == str else param_value for param_name, param_value in filter_data.items()) + '}'
+        result = tx.run(f"MATCH (book:Book {filter_str})"
+                        f"RETURN (book)")
+        return [x.data()['book'] for x in result]
+    with driver.session() as session:
+        try:
+            res = session.execute_write(_filter_books)
+            filtered_res = []
+            for node in res:
+                filtered_res.append(dict((k, v) for k,v in node.items() if k in get_data))
+            res = filtered_res
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+            res = []
+    return msg, res
 
 
 def edit_user(user_desc: dict):
