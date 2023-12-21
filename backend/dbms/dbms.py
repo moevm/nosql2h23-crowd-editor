@@ -106,7 +106,7 @@ def filter_users(filter_desc: dict):
         return [x.data()['user'] for x in result]
     with driver.session() as session:
         try:
-            res = session.execute_write(_filter_users)
+            res = session.execute_read(_filter_users)
             filtered_res = []
             for node in res:
                 filtered_res.append(dict((k, v) for k,v in node.items() if k in get_data))
@@ -128,7 +128,7 @@ def filter_books(filter_desc: dict):
         return [x.data()['book'] for x in result]
     with driver.session() as session:
         try:
-            res = session.execute_write(_filter_books)
+            res = session.execute_read(_filter_books)
             filtered_res = []
             for node in res:
                 filtered_res.append(dict((k, v) for k,v in node.items() if k in get_data))
