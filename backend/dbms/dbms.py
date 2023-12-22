@@ -234,3 +234,22 @@ def add_proposition(proposition_info):
         except Exception as e:
             msg = f"{type(e).__name__}: {e}"
     return msg   
+
+def get_book_author(book_info):
+    book_id = book_info['book_id']
+    def _get_book_author(tx):
+        result = tx.run("MATCH (user:User)-[:WROTE]->(book:Book {id: $book_id})"
+                        "RETURN (user)",
+                        book_id=book_id)
+        return [x.data()['user'] for x in result]
+    with driver.session() as session:
+        try:
+            res = session.execute_read(_get_book_author)
+            msg = ""
+        except Exception as e:
+            msg, res = f"{type(e).__name__}: {e}", []
+    return msg, res
+
+def get_author_books(book_info):
+    book_id = book_info['book_id']
+    def 
