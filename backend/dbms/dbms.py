@@ -250,6 +250,17 @@ def get_book_author(book_info):
             msg, res = f"{type(e).__name__}: {e}", []
     return msg, res
 
-def get_author_books(book_info):
-    book_id = book_info['book_id']
-    def 
+def get_author_books(author_info):
+    author_login = author_info['author_login']
+    def _get_author_books(tx):
+        result = tx.run("MATCH (user:User {login: $author_login})-[:WROTE]->(book:Book)"
+                        "RETURN (book)",
+                        author_login=author_login)
+        return [x.data()['book'] for x in result]
+    with driver.session() as session:
+        try:
+            res = session.execute_read(_get_author_books)
+            msg = ""
+        except Exception as e:
+            msg, res = f"{type(e).__name__}: {e}", []
+    return msg, res
