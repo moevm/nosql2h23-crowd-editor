@@ -1,42 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import SearchBar from "../../../components/searchbar";
 import BookCard from "../../../components/card/BookCard";
 import './index.css'
-
-/* fix: req on backend -> setUsers */
-  const mock = [
-  {
-    title: 'Book title',
-    description: 'Some description',
-  },
-  {
-    title: 'Title Placeholder',
-    description: 'Some very long long long long long  description',
-  },
-  {
-    title: 'Fake Name',
-    description: 'Some fake description',
-  },
-  {
-    title: '404',
-    description: 'Bad request. (joke)',
-  },
-]
+import BooksAPI from "../../../api/requests/books";
 
 export default function Library() {
-  const [books, setBooks] = useState([...mock, ...mock])
+  const [books, setBooks] = useState([])
+
+  useEffect(() => {
+    BooksAPI.getAllBooks()
+      .then((res) => {
+        if (res.data) {
+          setBooks(res.data)
+        }
+      })
+      .catch((err) => console.log(err))
+  }, [])
 
   return (
     <div className="users-wrap">
-      <SearchBar />
-      <div className="users-list">
-        {
-          books.map((book, i) => 
-            <BookCard book={book} key={i} />
-          )
-        }
-      </div>
+      {
+        books.length 
+      ? <div>
+          <SearchBar />
+          <div className="users-list">
+            { books.map((book, i) => <BookCard book={book.book} key={i} />) }
+          </div>
+        </div>
+        : <h2> Похоже книг ещё нет... или у нашего сервера проблемки ^-^ </h2>
+      }
     </div>
   )
 }

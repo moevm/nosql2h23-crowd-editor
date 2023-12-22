@@ -4,7 +4,6 @@ import './index.css';
 
 export default function BookCard(props) {
   const bookData = props.book
-
   return (
     <div className='card-custom'>
       <div className='img-spot'>
@@ -14,7 +13,9 @@ export default function BookCard(props) {
         <h4> { bookData.title } </h4>
         <div className='bio'>
           <span>
-            { bookData.description }
+            Genre: { bookData.genre } 
+            <br />
+            Created: { bookData.date }
           </span>
         </div>
       </div>
