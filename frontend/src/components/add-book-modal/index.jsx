@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import BooksAPI from '../../api/requests/books';
+import { AuthContext } from '../../router/pages/auth/AuthProvider';
 
 export default function AddBookModal ({ show, setShow }) {
-  const [bookName, setBookName] = useState('');
+  const [title, setTitle] = useState('');
   const [genre, setGenre] = useState('');
 
+  const { user } = useContext(AuthContext)
+
   const handleClose = () => setShow(false);
+
   const handleSubmit = (event) => {
-      event.preventDefault();
-      console.log(bookName, genre);
-      handleClose();
+    event.preventDefault();
+    BooksAPI.createBook({
+      title,
+      genre,
+      date: (new Date()).toLocaleDateString('en-US'),
+      text: '',
+      author_login: user.username
+    }).catch(err => console.log(err))
+    handleClose();
   };
 
   return (
@@ -19,36 +30,36 @@ export default function AddBookModal ({ show, setShow }) {
       </Modal.Header>
       <Modal.Body>
           <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="bookName">
+              <Form.Group controlId="title">
                   <Form.Label>Book Name</Form.Label>
                   <Form.Control 
-                      className='input-custom'
-                      type="text" 
-                      placeholder="Enter book name" 
-                      value={bookName} 
-                      onChange={(e) => setBookName(e.target.value)} 
+                    className='input-custom'
+                    type="text" 
+                    placeholder="Enter book name" 
+                    value={title} 
+                    onChange={(e) => setTitle(e.target.value)} 
                   />
               </Form.Group>
               <Form.Group controlId="genreSelector">
                   <Form.Label>Genre</Form.Label>
                   <Form.Select
-                      className='input-custom'
-                      value={genre}
-                      onChange={(e) => setGenre(e.target.value)}
+                    className='input-custom'
+                    value={genre}
+                    onChange={(e) => setGenre(e.target.value)}
                   >
-                      <option value="fiction">Fiction</option>
-                      <option value="nonfiction">Non-fiction</option>
-                      <option value="fantasy">Fantasy</option>
-                      <option value="mystery">Mystery</option>
+                    <option value="fiction">Fiction</option>
+                    <option value="nonfiction">Non-fiction</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="mystery">Mystery</option>
                   </Form.Select>
               </Form.Group>
               <Modal.Footer>
                 <Button
-                  disabled={!bookName || !genre}
+                  disabled={!title || !genre}
                   className='btn-outlined-custom'
                   type="submit"
                 >
-                    Save Changes
+                  Save Changes
                 </Button>
               </Modal.Footer>
           </Form>
