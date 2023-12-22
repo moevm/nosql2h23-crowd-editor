@@ -22,3 +22,5 @@
 login: Alex  
 Пароль: pass
 
+https://github.com/moevm/nosql2h23-crowd-editor/assets/71698557/9b9981bf-a1fa-4d63-b104-21eed9aff548
+
