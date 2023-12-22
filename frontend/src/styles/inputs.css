@@ -40,6 +40,12 @@
   transition-duration: 0.3s;
 }
 
+.btn-outlined-custom:disabled {
+  background-color: rgba(255, 255, 255, 0);
+  border-color: var(--gray);
+  color: var(--gray);
+}
+
 .btn-outlined-custom:hover {
   background-color: var(--primary);
   color: white;

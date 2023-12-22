@@ -11,15 +11,12 @@ export default function UserCard(props) {
         <img src={Person} alt="card-content" />
       </div>
       <div className='text-spot'>
-        <h4> { userData.name } </h4>
+        <h4> { userData.login } </h4>
         <h5>
-          { (userData.wr >= 0 ? '+' : '') + userData.wr + ' WR ' }
-          { (userData.er >= 0 ? '+' : '') + userData.er + ' ER' }
+          { (userData.wr >= 0 ? '+' : '') + userData.writer_rating + ' WR ' }
+          { (userData.er >= 0 ? '+' : '') + userData.editor_rating + ' ER' }
         </h5>
         <div className='bio'>
-          <span>
-            Roles: { userData.roles.join(', ') }
-          </span>
           <span>
             Bio: { userData.bio }
           </span>
