@@ -21,8 +21,6 @@ export default function Auth() {
   }
 
   const [windowType, setWindow] = useState(windowTypes.login);
-  const [isAuthor, setAuthor] = useState(false);
-  const [isEditor, setEditor] = useState(false);
 
   const changeType = () => {
     setWindow(

@@ -1,10 +1,21 @@
-import Person from '../../styles/person.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
+import Person from '../../styles/person.svg'
 import './index.css';
+import { Button } from 'react-bootstrap';
+import { useContext } from 'react';
+import { AuthContext } from '../../router/pages/auth/AuthProvider';
 
 export default function UserCard(props) {
   const userData = props.user
 
+  const { user } = useContext(AuthContext)
+
+  const deleteUser = () => {
+
+  }
+  
   return (
     <div className='card-custom'>
       <div className='img-spot'>
@@ -22,6 +33,15 @@ export default function UserCard(props) {
           </span>
         </div>
       </div>
+      {
+        user.isAdmin
+        ? <div className='footer'>
+            <Button variant='outline-danger' onClick={deleteUser}>
+              <FontAwesomeIcon icon={faTrash} />
+            </Button>
+          </div>
+        : <></>
+      }
     </div>
   );
 }

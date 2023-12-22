@@ -39,6 +39,12 @@
     }
   }
   transition-duration: 0.3s;
+  .footer {
+    display: flex;
+    padding: 20px;
+    justify-content: end;
+    border-top: 1px soliod var(--primary);
+  }
 }
 .card-custom:hover {
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.35);
