@@ -8,6 +8,7 @@ import { AuthContext } from "./AuthProvider";
 import BigLogo from '../../../styles/big-logo.svg'
 import '../../../styles/inputs.css'
 import './index.css'
+import AuthAPI from "../../../api/requests/auth";
 
 
 export default function Auth() {
@@ -19,23 +20,44 @@ export default function Auth() {
     login: 'login'
   }
 
-  const [windowType, setWindow] = useState(windowTypes.login)
+  const [windowType, setWindow] = useState(windowTypes.login);
+  const [isAuthor, setAuthor] = useState(false);
+  const [isEditor, setEditor] = useState(false);
 
   const changeType = () => {
     setWindow(
       windowType === windowTypes.login 
         ? windowTypes.register 
         : windowTypes.login
-    )
+    );
   }
 
   const submit = (event) => {
     /* fix: send auth req */
     event.preventDefault();
     const username = event.target.login.value;
-    const password = event.target.login.password;
-    login({ username });
-    navigate('/');
+    const password = event.target.password.value;
+
+    const successfully = () => {
+      login({ username });
+      navigate('/');
+    }
+
+    if (windowType === windowTypes.register) {
+      const bio = event.target.bio.value;
+      AuthAPI.register({
+        login: username,
+        bio,
+        password_hash: password,
+        role: 'user'
+      })
+        .then(successfully)
+        .catch((err) => console.log(err))
+    } else {
+      AuthAPI.login(username, password)
+        .then(successfully)
+        .catch(err => console.log(err))
+    }
   }
 
   return (
@@ -60,9 +82,14 @@ export default function Auth() {
           </Form.Group>
           {
             windowTypes[windowType] === windowTypes.register
-              ? <Form.Group className="mb-3" controlId="formRepeatPassword">
-                  <Form.Control className="input-custom" type="password" placeholder="Repeat password" />
-                </Form.Group>
+              ? <div>
+                  <Form.Control
+                    as="textarea"
+                    placeholder="Some words about yourself..."
+                    style={{ maxHeight: '100px', resize: 'none' }}
+                    name="bio"
+                  />
+                </div> 
               : <></>
           }
           <div className="d-flex flex-column w-100">
@@ -70,7 +97,7 @@ export default function Auth() {
               Submit
             </Button>
             <Button className="link-custom" variant="link" onClick={changeType}>
-              Or { windowTypes[windowType] }
+              Or { windowTypes[windowType] === windowTypes.register ? windowTypes.login : windowTypes.register }
             </Button>
           </div>
         </Form>
