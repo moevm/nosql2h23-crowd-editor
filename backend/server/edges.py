@@ -59,7 +59,7 @@ def get_proposition():
 
 
 # edit
-@edges.route("/review", methods=["POST"])
+@edges.route("/review/edit", methods=["POST"])
 def edit_review():
     edit_data = request.json
     error, reviews = dbms.edit_review(edit_data)
@@ -68,7 +68,7 @@ def edit_review():
     return error, 500
 
 
-@edges.route("/critique", methods=["POST"])
+@edges.route("/critique/edit", methods=["POST"])
 def edit_critique():
     edit_data = request.json
     error, critiques = dbms.edit_critique(edit_data)
@@ -77,7 +77,7 @@ def edit_critique():
     return error, 500
 
 
-@edges.route("/proposition", methods=["POST"])
+@edges.route("/proposition/edit", methods=["POST"])
 def edit_proposition():
     edit_data = request.json
     error, propositions = dbms.edit_proposition(edit_data)
@@ -87,7 +87,7 @@ def edit_proposition():
 
 
 # add
-@edges.route("/review", methods=["POST"])
+@edges.route("/review/add", methods=["POST"])
 def add_review():
     add_data = request.json
     error, reviews = dbms.add_book_review(add_data)
@@ -96,7 +96,7 @@ def add_review():
     return error, 500
 
 
-@edges.route("/critique", methods=["POST"])
+@edges.route("/critique/add", methods=["POST"])
 def add_critique():
     add_data = request.json
     error, critiques = dbms.add_critique(add_data)
@@ -105,10 +105,38 @@ def add_critique():
     return error, 500
 
 
-@edges.route("/proposition", methods=["POST"])
+@edges.route("/proposition/add", methods=["POST"])
 def add_proposition():
     add_data = request.json
     error, propositions = dbms.add_proposition(add_data)
     if not error:
         return jsonify(propositions), 200
     return error, 500
+
+
+# delete
+@edges.route("/review/delete", methods=["DELETE"])
+def delete_review():
+    delete_data = request.json
+    error, users = dbms.delete_review(delete_data)
+    if error:
+        return error, 500
+    return 200
+
+
+@edges.route("/critique/delete", methods=["DELETE"])
+def delete_critique():
+    delete_data = request.json
+    error, users = dbms.delete_critique(delete_data)
+    if error:
+        return error, 500
+    return 200
+
+
+@edges.route("/proposition/delete", methods=["DELETE"])
+def delete_proposition():
+    delete_data = request.json
+    error, users = dbms.delete_proposition(delete_data)
+    if error:
+        return error, 500
+    return 200

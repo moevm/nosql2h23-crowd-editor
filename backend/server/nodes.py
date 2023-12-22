@@ -77,3 +77,22 @@ def add_book():
     if error:
         return error, 500
     return 200
+
+
+# delete
+@nodes.route("/user/delete", methods=["DELETE"])
+def add_user():
+    delete_data = request.json
+    error, users = dbms.delete_user(delete_data)
+    if error:
+        return error, 500
+    return 200
+
+
+@nodes.route("/book/delete", methods=["DELETE"])
+def add_book():
+    delete_data = request.json
+    error, users = dbms.delete_book(delete_data)
+    if error:
+        return error, 500
+    return 200
