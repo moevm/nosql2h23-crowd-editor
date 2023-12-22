@@ -23,10 +23,10 @@ def get_critiques():
 
 
 @edges.route("/edit/all", methods=["GET"])
-def get_edits():
-    error, edits = dbms.get_edits()
+def get_propositions():
+    error, propositions = dbms.get_propositions()
     if not error:
-        return jsonify(edits), 200
+        return jsonify(propositions), 200
     return error, 500
 
 
@@ -49,12 +49,12 @@ def get_critique():
     return error, 500
 
 
-@edges.route("/edit", methods=["GET"])
-def get_edit():
+@edges.route("/proposition", methods=["GET"])
+def get_proposition():
     filter_data = request.json
-    error, edits = dbms.filter_edits(filter_data)
+    error, propositions = dbms.filter_propositions(filter_data)
     if not error:
-        return jsonify(edits), 200
+        return jsonify(propositions), 200
     return error, 500
 
 
@@ -77,12 +77,12 @@ def edit_critique():
     return error, 500
 
 
-@edges.route("/edit", methods=["POST"])
-def edit_edit():
+@edges.route("/proposition", methods=["POST"])
+def edit_proposition():
     edit_data = request.json
-    error, edits = dbms.edit_edit(edit_data)
+    error, propositions = dbms.edit_proposition(edit_data)
     if not error:
-        return jsonify(edits), 200
+        return jsonify(propositions), 200
     return error, 500
 
 
@@ -90,7 +90,7 @@ def edit_edit():
 @edges.route("/review", methods=["POST"])
 def add_review():
     add_data = request.json
-    error, reviews = dbms.add_review(add_data)
+    error, reviews = dbms.add_book_review(add_data)
     if not error:
         return jsonify(reviews), 200
     return error, 500
@@ -105,10 +105,10 @@ def add_critique():
     return error, 500
 
 
-@edges.route("/edit", methods=["POST"])
-def add_edit():
+@edges.route("/proposition", methods=["POST"])
+def add_proposition():
     add_data = request.json
-    error, edits = dbms.add_edit(add_data)
+    error, propositions = dbms.add_proposition(add_data)
     if not error:
-        return jsonify(edits), 200
+        return jsonify(propositions), 200
     return error, 500
