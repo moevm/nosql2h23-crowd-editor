@@ -12,7 +12,7 @@ export default class AuthAPI {
     return http.post('user/add', params)
   }
 
-  static async login(login, password) {
-    UsersAPI.filterUsers({ login, password }, ['login', 'password'])
+  static async login(login, password_hash) {
+    return await UsersAPI.filterUsers({ login, password_hash }, ['login'])
   }
 }

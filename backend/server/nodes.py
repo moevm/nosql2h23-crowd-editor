@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+import json
 
 from dbms import dbms
 
@@ -25,8 +26,16 @@ def get_books():
 # filter
 @nodes.route("/user", methods=["GET"])
 def get_user():
-    print(request.args.to_dict())
-    filter_data = request.json
+    filter_param = request.args.get('filter')
+    get_param = request.args.get('get')
+    try:
+        filter_json = json.loads(filter_param) if filter_param else None
+        get_json = json.loads(get_param) if get_param else None
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON format"}), 400
+
+    filter_data = {"filter": filter_json, "get": get_json}
+    print(filter_data)
     error, users = dbms.filter_users(filter_data)
     if not error:
         return jsonify(users), 200

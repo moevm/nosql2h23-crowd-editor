@@ -7,11 +7,10 @@ export default class UsersAPI {
   static async filterUsers(filter, get) {
     /**
      * filter: {
-     *  login: string
-     *  password: string
+     *  [key]: [value]
      * }
      * get: [fields to get]
     */
-   http.get('/user', { params: { filter: JSON.stringify(filter), get: JSON.stringify(get) } })
+   return http.get('/user', { params: { filter: JSON.stringify(filter), get: JSON.stringify(get) } })
   }
 }

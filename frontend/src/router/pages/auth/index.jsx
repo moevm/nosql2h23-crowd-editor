@@ -53,7 +53,11 @@ export default function Auth() {
         .catch((err) => console.log(err))
     } else {
       AuthAPI.login(username, password)
-        .then(successfully)
+        .then(res => {
+          if (res.data?.length) {
+            successfully();
+          }
+        })
         .catch(err => console.log(err))
     }
   }
