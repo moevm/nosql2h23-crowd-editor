@@ -58,7 +58,7 @@ def edit_user():
     error = dbms.edit_user(edit_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200
 
 
 @nodes.route("/book/edit", methods=["POST"])
@@ -67,7 +67,7 @@ def edit_book():
     error = dbms.edit_book(edit_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200
 
 
 # add
@@ -77,7 +77,7 @@ def add_user():
     error = dbms.add_user(add_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200
 
 
 @nodes.route("/book/add", methods=["POST"])
@@ -86,7 +86,7 @@ def add_book():
     error, users = dbms.add_book(add_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200
 
 
 # delete
@@ -96,7 +96,7 @@ def delete_user():
     error, users = dbms.delete_user(delete_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200
 
 
 @nodes.route("/book/delete", methods=["DELETE"])
@@ -105,4 +105,4 @@ def delete_book():
     error, users = dbms.delete_book(delete_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200

@@ -121,7 +121,7 @@ def delete_review():
     error, users = dbms.delete_review(delete_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200
 
 
 @edges.route("/critique/delete", methods=["DELETE"])
@@ -130,7 +130,7 @@ def delete_critique():
     error, users = dbms.delete_critique(delete_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200
 
 
 @edges.route("/proposition/delete", methods=["DELETE"])
@@ -139,4 +139,4 @@ def delete_proposition():
     error, users = dbms.delete_proposition(delete_data)
     if error:
         return error, 500
-    return 200
+    return {"success": True}, 200
