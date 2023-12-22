@@ -19,12 +19,25 @@ export default function Users() {
       .catch((err) => console.log(err))
   }, [])
 
+  const searchCallback = (login) => {
+    UsersAPI.filterUsers(
+      { login }, 
+      ['login', 'writer_rating', 'editor_rating', 'bio']
+    )
+      .then(res => {
+        if (res.data) {
+          setUsers(res.data);
+        }
+      })
+      .catch(err => console.log(err))
+  }
+
   return (
     <div className="users-wrap">
       {
         users.length 
       ? <div>
-          <SearchBar />
+          <SearchBar searchCallback={searchCallback} />
           <div className="users-list">
             { users.map((user, i) => <UserCard user={user} key={i} />) }
           </div>
