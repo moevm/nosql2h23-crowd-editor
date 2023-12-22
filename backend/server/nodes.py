@@ -81,7 +81,7 @@ def add_book():
 
 # delete
 @nodes.route("/user/delete", methods=["DELETE"])
-def add_user():
+def delete_user():
     delete_data = request.json
     error, users = dbms.delete_user(delete_data)
     if error:
@@ -90,7 +90,7 @@ def add_user():
 
 
 @nodes.route("/book/delete", methods=["DELETE"])
-def add_book():
+def delete_book():
     delete_data = request.json
     error, users = dbms.delete_book(delete_data)
     if error:
