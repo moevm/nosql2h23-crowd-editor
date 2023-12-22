@@ -4,11 +4,15 @@ from token import TOKEN, URL
 
 driver = GraphDatabase.driver(URL, auth=("neo4j", TOKEN))
 
+def transform_dict_to_str_with_brackets(d):
+    return '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in d.items()) + '}'
+    
+
 def get_users():
     def _get_users(tx):
         result = tx.run("MATCH (user:User)"
                         "RETURN (user)")
-        return [x.data() for x in result]
+        return [x.data()['user'] for x in result]
     with driver.session() as session:
         try:
             res = session.execute_read(_get_users)
@@ -96,12 +100,11 @@ def add_book(book_desc: dict):
             res = f"{type(e).__name__}: {e}"
     return res
 
-
 def filter_users(filter_desc: dict):
     filter_data = filter_desc["filter"]
     get_data = filter_desc['get']
     def _filter_users(tx):
-        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
+        filter_str = transform_dict_to_str_with_brackets(filter_data)
         result = tx.run(f"MATCH (user:User {filter_str})"
                         f"RETURN (user)")
         return [x.data()['user'] for x in result]
@@ -123,7 +126,7 @@ def filter_books(filter_desc: dict):
     filter_data = filter_desc["filter"]
     get_data = filter_desc['get']
     def _filter_books(tx):
-        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
+        filter_str = transform_dict_to_str_with_brackets(filter_data)
         result = tx.run(f"MATCH (book:Book {filter_str})"
                         f"RETURN (book)")
         return [x.data()['book'] for x in result]
@@ -145,7 +148,7 @@ def edit_user(update_user_desc: dict):
     filter_data = update_user_desc["filter"]
     set_data = update_user_desc["set"]
     def _edit_user(tx):
-        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
+        filter_str = transform_dict_to_str_with_brackets(filter_data)
         set_str = ", ".join(f"user.{param_name} = " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in set_data.items())
         result = tx.run(f"MATCH (user:User {filter_str})"
                         f"SET {set_str}")
@@ -155,14 +158,14 @@ def edit_user(update_user_desc: dict):
             msg = ""
         except Exception as e:
             msg = f"{type(e).__name__}: {e}"
-    return msg   
+    return msg    
 
 
 def edit_book(update_book_desc: dict):
     filter_data = update_book_desc["filter"]
     set_data = update_book_desc["set"]
     def _edit_book(tx):
-        filter_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in filter_data.items()) + '}'
+        filter_str = transform_dict_to_str_with_brackets(filter_data)
         set_str = ", ".join(f"book.{param_name} = " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in set_data.items())
         result = tx.run(f"MATCH (book:Book {filter_str})"
                         f"SET {set_str}")
@@ -172,14 +175,14 @@ def edit_book(update_book_desc: dict):
             msg = ""
         except Exception as e:
             msg = f"{type(e).__name__}: {e}"
-    return msg   
+    return msg    
 
 def add_book_review(review_info):
     user_login = review_info['user_login']
     book_id = review_info['book_id']
     review_data = review_info['review_data']
     def _add_book_review(tx):
-        review_data_str = '{' + ", ".join(f"{param_name}: " + (f"'{param_value}'" if type(param_value) == str else f"{param_value}") for param_name, param_value in review_data.items()) + '}'
+        review_data_str = transform_dict_to_str_with_brackets(review_data)
         result = tx.run("MATCH (user:User {login: $user_login}), (book:Book {id: $book_id})"
                         f"CREATE (user)-[r:REVIEWED {review_data_str}]->(book)"
                         "SET r.id=ID(r)",
@@ -190,4 +193,44 @@ def add_book_review(review_info):
             msg = ""
         except Exception as e:
             msg = f"{type(e).__name__}: {e}"
-    return msg  
+    return msg    
+
+
+def add_critique(critique_info):
+    user_src_login = critique_info['user_src_login']
+    user_login = critique_info['user_login']
+    critique_data = critique_info['critique_data']
+    def _add_critique(tx):
+        critique_data_str = transform_dict_to_str_with_brackets(critique_data)
+        result = tx.run("MATCH (user_src:User {login: $user_src_login}), (user:User {login: $user_login})"
+                        f"CREATE (user_src)-[r:CRITIQUED {critique_data_str}]->(user)"
+                        "SET r.id=ID(r)",
+                        user_src_login=user_src_login,
+                        user_login=user_login)
+    with driver.session() as session:
+        try:
+            session.execute_write(_add_critique)
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+    return msg    
+
+
+def add_proposition(proposition_info):
+    user_login = proposition_info['user_login']
+    book_id = proposition_info['book_id']
+    proposition_data = proposition_info['proposition_info']
+    def _add_proposition(tx):
+        proposition_data_str = transform_dict_to_str_with_brackets(proposition_data)
+        result = tx.run("MATCH (user:User {login: $user_login}), (book:Book {id: $book_id})"
+                        f"CREATE (user)-[r:PROPOSED {proposition_data_str}]->(book)"
+                        "SET r.id=ID(r)",
+                        user_login=user_login,
+                        book_id=book_id)
+    with driver.session() as session:
+        try:
+            session.execute_write(_add_proposition)
+            msg = ""
+        except Exception as e:
+            msg = f"{type(e).__name__}: {e}"
+    return msg   
