@@ -5,6 +5,7 @@ from backend.dbms import dbms
 nodes = Blueprint('urls', __name__,)
 
 
+# get all
 @nodes.route("/users/all", methods=["GET"])
 def get_users():
     error, users = dbms.get_users()
@@ -21,6 +22,7 @@ def get_books():
     return error, 500
 
 
+# filter
 @nodes.route("/user", methods=["GET"])
 def get_user():
     filter_data = request.json
@@ -39,6 +41,7 @@ def get_book():
     return error, 500
 
 
+# edit
 @nodes.route("/user/edit", methods=["POST"])
 def edit_user():
     edit_data = request.json
@@ -57,6 +60,7 @@ def edit_book():
     return 200
 
 
+# add
 @nodes.route("/user/add", methods=["POST"])
 def add_user():
     add_data = request.json
