@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 
-from backend.dbms import dbms
+from dbms import dbms
 
-edges = Blueprint('urls', __name__,)
+edges = Blueprint('edges', __name__,)
 
 
 # get all

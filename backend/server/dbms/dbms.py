@@ -1,5 +1,5 @@
 from neo4j import GraphDatabase
-from token import TOKEN, URL
+from .token import TOKEN, URL
 
 
 driver = GraphDatabase.driver(URL, auth=("neo4j", TOKEN))

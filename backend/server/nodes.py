@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 
-from backend.dbms import dbms
+from dbms import dbms
 
-nodes = Blueprint('urls', __name__,)
+nodes = Blueprint('nodes', __name__,)
 
 
 # get all
@@ -25,6 +25,7 @@ def get_books():
 # filter
 @nodes.route("/user", methods=["GET"])
 def get_user():
+    print(request.args.to_dict())
     filter_data = request.json
     error, users = dbms.filter_users(filter_data)
     if not error:
@@ -64,7 +65,7 @@ def edit_book():
 @nodes.route("/user/add", methods=["POST"])
 def add_user():
     add_data = request.json
-    error, users = dbms.add_user(add_data)
+    error = dbms.add_user(add_data)
     if error:
         return error, 500
     return 200
