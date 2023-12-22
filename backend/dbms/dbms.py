@@ -234,3 +234,46 @@ def add_proposition(proposition_info):
         except Exception as e:
             msg = f"{type(e).__name__}: {e}"
     return msg   
+
+def filter_wrote_relation(wrote_info):
+    user_filter = wrote_info["user_filter"]
+    book_filter = wrote_info["book_filter"]
+    get = wrote_info["get"] # user, book или r
+    def _get_book_author(tx):
+        user_filter_str = transform_dict_to_str_with_brackets(user_filter)
+        book_filter_str = transform_dict_to_str_with_brackets(book_filter)
+        result = tx.run(f"MATCH (user:User {user_filter_str})-[r:WROTE]->(book:Book {book_filter_str})"
+                        f"RETURN ({get})")
+        return [x.data()[get] for x in result]
+    with driver.session() as session:
+        try:
+            res = session.execute_read(_get_book_author)
+            msg = ""
+        except Exception as e:
+            msg, res = f"{type(e).__name__}: {e}", []
+    return msg, res
+
+def filter_proposed_relation(proposed_info):
+    user_filter = proposed_info["user_filter"]
+    book_filter = proposed_info["book_filter"]
+    get = proposed_info["get"] # user, book или r
+    if get == 'r':
+        get = 'properties(r)'
+    elif type(get) == tuple and 'r' in get:
+        new_get = [x for x in get if x != 'r']
+        new_get.append('properties(r)')
+        get = tuple(new_get)
+    def _get_book_propositions(tx):
+        user_filter_str = transform_dict_to_str_with_brackets(user_filter)
+        book_filter_str = transform_dict_to_str_with_brackets(book_filter)
+        return_str = get if type(get) == str else ",".join(get)
+        result = tx.run(f"MATCH (user:User {user_filter_str})-[r:PROPOSED]->(book:Book {book_filter_str})"
+                        f"RETURN {return_str}")
+        return [x.data() for x in result]
+    with driver.session() as session:
+        try:
+            res = session.execute_read(_get_book_propositions)
+            msg = ""
+        except Exception as e:
+            msg, res = f"{type(e).__name__}: {e}", []
+    return msg, res
